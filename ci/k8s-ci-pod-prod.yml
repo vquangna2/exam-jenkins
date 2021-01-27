@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  # annotations:
+    # iam.amazonaws.com/role: arn:aws:iam::692204622215:role/role_deployment-cloudfront-s3
+spec:
+  containers:
+    - name: ci-container
+      image: node:12.6
+      imagePullPolicy: IfNotPresent
+      tty: true
+      resources:
+        requests:
+          memory: "3Gi"
+        limits:
+          memory: "5Gi"
+    - name: helm-awscli
+      image: uizaio/helm-awscli:v2.14.3
+      imagePullPolicy: IfNotPresent

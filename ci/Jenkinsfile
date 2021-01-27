@@ -1,0 +1,37 @@
+pipeline {
+  agent none
+  options {
+    skipStagesAfterUnstable()
+  }
+  environment {
+    PROJECT_NAME = "helloworld"
+  }
+  stages {
+    stage('Build and Deploy Production') {
+      when {
+        allOf {
+          branch "master"
+        }
+        beforeAgent true
+      }
+      agent {
+        kubernetes {
+          label "cipod-console"
+          defaultContainer 'ci-container'
+          yamlFile 'ci/k8s-ci-pod-prod.yml'
+        }
+      }
+      steps {
+        container('ci-container') {
+          sh label: 'Build', script: 'npm install'
+        }
+        // container('helm-awscli') {
+        //   sh label: 'Build', script: 'cd ./build && aws s3 sync . s3://${S3_BUCKET_PROD} --delete'
+        // }
+        // container('helm-awscli') {
+        //   sh label: 'Build', script: 'aws cloudfront create-invalidation --distribution-id ${CDN_DISTRIBUTION_ID_PROD} --paths "/*"'
+        // }
+      }
+    }
+  }
+}
