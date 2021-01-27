@@ -8,12 +8,12 @@ pipeline {
   }
   stages {
     stage('Build and Deploy Production') {
-      when {
-        allOf {
-          branch "master"
-        }
-        beforeAgent true
-      }
+      // when {
+      //   allOf {
+      //     branch "master"
+      //   }
+      //   beforeAgent true
+      // }
       agent {
         kubernetes {
           label "cipod-console"
@@ -23,6 +23,7 @@ pipeline {
       }
       steps {
         container('ci-container') {
+          sh 'ls -la'
           sh label: 'Build', script: 'npm install'
         }
         // container('helm-awscli') {
